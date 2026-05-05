@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import path from "path"
+import cors from "cors"
 import { ENV } from "./lib/env.js";
 import { connectDB } from "./lib/db.js";
 
@@ -8,6 +9,11 @@ dotenv.config()
 
 const app  = express()
 const __dirname = path.resolve()
+
+// middleaware
+app.use(express.json())
+// credentials:true meaning ? => server allows a browser to include cookies on request
+app.use(cors({origin:ENV.CLIENT_URL,credentials:true}))
 
 
 app.get("/health", (req,res) => {
