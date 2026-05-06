@@ -1,6 +1,5 @@
 import {StreamChat} from "stream-chat"
 import { ENV } from "./env.js"
-import { use, useId } from "react";
 
 
 const apiKey = ENV.STREAM_API_KEY
