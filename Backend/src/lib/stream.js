@@ -1,5 +1,5 @@
 import {StreamChat} from "stream-chat"
-import { ENV } from "./env"
+import { ENV } from "./env.js"
 import { use, useId } from "react";
 
 
@@ -10,7 +10,7 @@ if (!apiKey || !apiSecret) {
     console.error("STREAM_API_KEY or STREAM_API_SECRET is missing");
 }
 
-export const chatClient = StreamChat.getInstance(apiKey,apiSecret)
+export const chatClient = StreamChat.getInstance(apiKey,apiSecret) // will be for chat features
 
 export const upsertStreamUser = async (userData) => {
     try {
