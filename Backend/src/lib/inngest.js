@@ -2,11 +2,13 @@ import { Inngest } from "inngest";
 import { connectDB } from "./db.js";
 import User from "../models/User.js";
 
-export const inngest = new Inngest({ id: "talent-iq" });
+export const inngest = new Inngest({ id: "my-app" });
 
 const syncUser = inngest.createFunction(
-  { id: "sync-user" },
-  { event: "clerk/user.created" },
+  {
+    id: "sync-user",
+    triggers: [{ event: "clerk/user.created" }], // ✅ FIXED
+  },
   async ({ event }) => {
     await connectDB();
 
@@ -21,17 +23,26 @@ const syncUser = inngest.createFunction(
 
     await User.create(newUser);
 
+    await upsertStreamUser({
+      id: newUser.clerkId.toString(),
+      name: newUser.name,
+      image: newUser.profileImage,
+    });
   }
 );
 
 const deleteUserFromDB = inngest.createFunction(
-  { id: "delete-user-from-db" },
-  { event: "clerk/user.deleted" },
+  {
+    id: "delete-user-from-db",
+    triggers: [{ event: "clerk/user.deleted" }], // ✅ FIXED
+  },
   async ({ event }) => {
     await connectDB();
 
     const { id } = event.data;
-    await User.deleteOne({ clerkId: id })
+    await User.deleteOne({ clerkId: id });
+
+    await deleteStreamUser(id.toString());
   }
 );
 
